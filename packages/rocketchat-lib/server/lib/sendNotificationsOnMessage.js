@@ -157,7 +157,9 @@ function sendAllNotifications(message, room) {
 		return message;
 	}
 
-	const sender = (room.t !== 'l') ? RocketChat.models.Users.findOneById(message.u._id) : room.v;
+	const roomConfig = RocketChat.roomTypes.getConfig(room.t);
+
+	const sender = roomConfig.getMsgSender(message.u._id);
 	if (!sender) {
 		return message;
 	}

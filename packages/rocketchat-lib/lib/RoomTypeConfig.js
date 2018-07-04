@@ -203,4 +203,33 @@ export class RoomTypeConfig {
 	getUiText(/* context */) {
 		return '';
 	}
+
+	/**
+	 * Returns the full object of message sender
+	 * @param {string} senderId Sender's _id
+	 * @return {object} Sender's object from db
+	 */
+	getMsgSender(senderId) {
+		return Meteor.isServer ? RocketChat.models.Users.findOneById(senderId) : {};
+	}
+
+	/**
+	 * Returns details to use on notifications
+	 *
+	 * @param {object} room
+	 * @param {object} user
+	 * @param {string} notificationMessage
+	 * @return {object} Notification details
+	 */
+	getNotificationDetails(room, user, notificationMessage) {
+		if (!Meteor.isServer) {
+			return {};
+		}
+
+		const title = `#${ this.getRoomName(room.t, room) }`;
+
+		const text = `${ RocketChat.settings.get('UI_Use_Real_Name') ? user.name : user.username }: ${ notificationMessage }`;
+
+		return { title, text };
+	}
 }
